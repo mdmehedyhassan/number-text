@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <input type="number" id="inputNumber">
+    <button onclick="inputHandler()">click</button>
+    <h1 id="textId"></h1>
+    <script>
+        let text = '';
+        var numberToText = {
+            ones: ['', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen'],
+            tens: ['', '', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'],
+            sep: ['', ' thousand ', ' million ', ' billion ', ' trillion ', ' quadrillion ', ' quintillion ', ' sextillion ']
+        };
+        const inputHandler = () => {
+            text = '';
+            let str = inputNumber.value + '.';
+            const strNumber = parseInt(inputNumber.value);
+            const getStr = str.split('.')[0];
+            if (getStr.length > 15) alert('This number is too long!!!');
+            if (strNumber < 0) alert('Please enter a balid number!!!');
+            let underThousand = getStr.substring(getStr.length, getStr.length - 3)
+            let thousand = getStr.substring(getStr.length - 3, getStr.length - 6);
+            let million = getStr.substring(getStr.length - 6, getStr.length - 9);
+            let billion = getStr.substring(getStr.length - 9, getStr.length - 12);
+            let trillion = getStr.substring(getStr.length - 12, getStr.length - 15);
+            callBackNumber(trillion, 'trillion')
+            callBackNumber(billion, 'billion')
+            callBackNumber(million, 'million')
+            callBackNumber(thousand, 'thousand')
+            callBackNumber(underThousand, '')
+            textId.innerText = text;
+        }
+        const callBackNumber = (number, string = '') => {
+            console.log({number, string})
+            if(number && number != '000'){
+                const str = number;
+                let getOnes = 0;
+                let getTens = 0;
+                let getHuns = 0;
+                const strNumber = parseInt(str);
+                if (strNumber < 20) {
+                    text = text + ' ' + numberToText.ones[strNumber] + ' ' + string
+                } else if (strNumber < 100) {
+                    const newNumber = strNumber / 10 + '.';
+                    getTens = parseInt(newNumber.split('.')[0]);
+                    if(newNumber.split('.')[1].length == 1){
+                        getOnes = parseInt(newNumber.split('.')[1]);
+                    }
+                    text = text + ' ' + numberToText.tens[getTens] + ' ' + numberToText.ones[getOnes] + ' ' + string
+                } else if (strNumber < 1000) {
+                    const newNumber = strNumber / 100 + '.';
+                    getHuns = parseInt(newNumber.split('.')[0]);
+                    const getOthers = parseInt(newNumber.split('.')[1]);
+                    if (newNumber.split('.')[1].length == 2) {
+                        if (getOthers < 19) {
+                            getOnes = getOthers;
+                        }else{
+                            const newOtherNumber = getOthers / 10 + '.';
+                            getTens = parseInt(newOtherNumber.split('.')[0]);
+                            getOnes = parseInt(newOtherNumber.split('.')[1]);
+                        }
+                    }else if(newNumber.split('.')[1].length == 1){
+                            getTens = getOthers;
+                    }
+                    text = text + ' ' + numberToText.ones[getHuns] + ' hundred ' + numberToText.tens[getTens] + ' ' + numberToText.ones[getOnes] + ' ' + string
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>
